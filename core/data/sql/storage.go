@@ -23,18 +23,18 @@ func NewStorage() (*Storage, error) {
 		db: db,
 	}
 
-	err = storage.createEnginesTable()
-	if err != nil {
-		return nil, err
-	}
-	err = storage.createUsersTable()
-	if err != nil {
-		return nil, err
-	}
-	err = storage.createDatabasesTable()
-	if err != nil {
-		return nil, err
-	}
+	// err = storage.createEnginesTable()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// err = storage.createUsersTable()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// err = storage.createDatabasesTable()
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	//
 	// err = storage.createMatchesTable()

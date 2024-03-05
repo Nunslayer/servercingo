@@ -1,12 +1,11 @@
 import React from 'react'
-import { Icon } from '@iconify/react'
 import { motion } from 'framer-motion'
 
 import * as Page from '@/components/custom/page'
-import { Button } from '@/components/custom/button'
+
 
 // import { model } from '@@/go/models'
-import { OpenResultsDirectory } from '@@/go/core/CommandHandler'
+
 import { Label, Select } from 'flowbite-react'
 import { CreateTableForm } from './tbForm'
 

@@ -54,6 +54,8 @@ export const connectEngine =
             dispatch(setIsLoading(true))
             try {
                 await ConnectEngine(server, login, pass, port)
+                const res = await GetDatabases()
+                dispatch(setDbs(res))
                 dispatch(setServer(server))
                 dispatch(setConnectedStatus(true))
                 dispatch(setLogin(login))

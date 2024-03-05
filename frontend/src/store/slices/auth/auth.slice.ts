@@ -49,6 +49,7 @@ export const authSlice = createSlice({
             state.database = initialState.database
             state.table = initialState.table
             state.isSysAdmin = initialState.isSysAdmin
+            state.isConnected= initialState.isConnected
             state.dbs = initialState.dbs
             state.tbs = initialState.tbs
             state.lgs = initialState.lgs

@@ -44,7 +44,7 @@ export const LLGG: model.Login[] = [
     },
 ]
 export function DatabasesWrapper() {
-    const { database } = useAppSelector((state) => state.auth)
+    const { database, dbs } = useAppSelector((state) => state.auth)
     // const { dbs } = useAppSelector((state) => state.database)
     // const navigate = useNavigate()
     const dispatch = useAppDispatch()
@@ -77,16 +77,16 @@ export function DatabasesWrapper() {
                             <div className='flex flex-col h-full w-[300px] justify-between gap-4 '>
                                 {DDBB?.length === 0 ?
                                     <div className='h-full bg-[rgba(3,50,28,0.20)]'>
-                                        <h2 className="text-xl text-center text-[#3DB8D5]">{`Bases de Datos (${DDBB.length})`}</h2>
+                                        <h2 className="text-xl text-center text-[#3DB8D5]">{`Bases de Datos (${dbs.length})`}</h2>
                                         <p className='my-4 max-w-[340px] pl-3'>
                                             No existen bases de datos disponibles
                                         </p>
                                     </div> :
                                     <div className='flex flex-col justify-between h-full rounded-[15px] bg-[rgba(3,5,19,0.2)]'>
-                                        <h2 className="text-xl text-center text-[#3DB8D5]">{`Bases de Datos (${DDBB.length})`}</h2>
+                                        <h2 className="text-xl text-center text-[#3DB8D5]">{`Bases de Datos (${dbs.length})`}</h2>
                                         <ul className='mt-4 h-50 overflow-y-scroll'>
                                             {
-                                                DDBB.map((db) => {
+                                                dbs.map((db) => {
                                                     return (
                                                         <ListDB key={db} value={db} selected={db === database} disabled={false} closeForm={closeForm} />
                                                     )
