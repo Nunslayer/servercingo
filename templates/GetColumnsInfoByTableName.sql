@@ -1,0 +1,25 @@
+SELECT
+    COLUMN_NAME,
+    DATA_TYPE,
+    CHARACTER_MAXIMUM_LENGTH,
+    IS_NULLABLE,
+    COLUMN_DEFAULT,
+    CASE
+        WHEN COLUMNPROPERTY(object_id(TABLE_SCHEMA + '.' + TABLE_NAME), COLUMN_NAME, 'IsIdentity') = 1 THEN 'Yes'
+        ELSE 'No'
+    END AS IsIdentity,
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+            WHERE
+                OBJECTPROPERTY(OBJECT_ID(CONSTRAINT_SCHEMA + '.' + CONSTRAINT_NAME), 'IsPrimaryKey') = 1
+                AND TABLE_NAME = C.TABLE_NAME
+                AND COLUMN_NAME = C.COLUMN_NAME
+        ) THEN 'Yes'
+        ELSE 'No'
+    END AS IsPrimaryKey
+FROM
+    INFORMATION_SCHEMA.COLUMNS AS C
+WHERE
+    TABLE_NAME = '{{ . }}'

@@ -1,0 +1,3 @@
+-- este es un ejemplo de script template de sql server para crear
+-- una base de datos basica
+
