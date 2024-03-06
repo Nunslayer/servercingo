@@ -2,7 +2,6 @@
 -- Create database template
 -- =============================================
 USE master
-GO
 
 -- Drop the database if it already exists
 IF  EXISTS (
@@ -11,7 +10,6 @@ IF  EXISTS (
 		WHERE name = N'{{ .DbName }}'
 )
 DROP DATABASE {{ .DbName }}
-GO
 
 CREATE DATABASE {{ .DbName }}
 {{ if eq .IsDefault false }}
@@ -33,4 +31,3 @@ LOG ON
 {{ end -}}
 )
 {{ end }}
-GO

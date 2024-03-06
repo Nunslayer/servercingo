@@ -2,7 +2,6 @@
 -- Drop Database Template
 -- =========================
 USE master
-GO
 
 IF  EXISTS (
 	SELECT name
@@ -10,4 +9,3 @@ IF  EXISTS (
 		WHERE name = N'{{ . }}'
 )
 DROP DATABASE {{ . }}
-GO

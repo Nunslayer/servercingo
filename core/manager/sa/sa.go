@@ -14,7 +14,7 @@ import (
 
 type SAManager struct {
 	isConnected bool
-	stopPolling func()error
+	stopPolling func() error
 	DB          *sql.DB
 	*data.CFNTrackerRepository
 }
@@ -58,7 +58,7 @@ var funcs = template.FuncMap{
 
 func NewSAManager(repo *data.CFNTrackerRepository) *SAManager {
 	return &SAManager{
-		stopPolling:          func() error{return nil},
+		stopPolling:          func() error { return nil },
 		CFNTrackerRepository: repo,
 	}
 }
@@ -71,10 +71,12 @@ func (m *SAManager) Start(ctx context.Context, dsn string) error {
 func (m *SAManager) CreateDatabase(ctx context.Context, arg *model.CreateDatabase) error {
 	q, err := loadTemplate("CreateDatabase.sql", arg)
 	if err != nil {
+		fmt.Println(fmt.Errorf("Create database generate query: %w", err))
 		return fmt.Errorf("Create database generate query: %w", err)
 	}
 	r, err := m.DB.Exec(q)
 	if err != nil {
+		fmt.Println(fmt.Errorf("Create database execute query: %w", err))
 		return fmt.Errorf("Create database execute query: %w", err)
 	}
 	fmt.Println(r)
@@ -103,10 +105,12 @@ func (m *SAManager) CreateDatabase(ctx context.Context, arg *model.CreateDatabas
 func (m *SAManager) DropDatabase(ctx context.Context, dbName string) error {
 	q, err := loadTemplate("DropDatabase.sql", dbName)
 	if err != nil {
+		fmt.Println(fmt.Errorf("Drop database generate query: %w", err))
 		return fmt.Errorf("Drop database generate query: %w", err)
 	}
 	r, err := m.DB.Exec(q)
 	if err != nil {
+		fmt.Println(fmt.Errorf("Drop database execute query: %w", err))
 		return fmt.Errorf("Drop database execute query: %w", err)
 	}
 	fmt.Println(r)
@@ -141,19 +145,22 @@ func (m *SAManager) GetDatabases(ctx context.Context) ([]string, error) {
     `
 	rows, err := m.DB.Query(q)
 	if err != nil {
-		return nil, err
+		fmt.Println(fmt.Errorf("Get databases execute query %w", err))
+		return nil, fmt.Errorf("Get databases execute query %w", err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var db string
 		if err := rows.Scan(&db); err != nil {
-			return nil, err
+            fmt.Println(fmt.Errorf("Get databases scan row: %w", err))
+            return nil, fmt.Errorf("Get databases scan row: %w", err)
 		}
 		dbs = append(dbs, db)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, err
+            fmt.Println(fmt.Errorf("Get databases row: %w", err))
+            return nil, fmt.Errorf("Get databases row: %w", err)
 	}
 	return dbs, nil
 }
@@ -164,11 +171,14 @@ func (m *SAManager) GetDatabaseInfo(
 ) ([]model.DatabaseFileDetail, error) {
 	q, err := loadTemplate("GetDatabaseInfo.sql", dbName)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Get info database generate query: %w", err))
 		return nil, fmt.Errorf("Get info database generate query: %w", err)
 	}
+    fmt.Println(q)
 	rows, err := m.DB.Query(q)
 	if err != nil {
-		return nil, err
+        fmt.Println(fmt.Errorf("Get info database execute query: %w", err))
+		return nil, fmt.Errorf("Get info database execute query: %w", err)
 	}
 	defer rows.Close()
 	var dbInfo []model.DatabaseFileDetail
@@ -178,7 +188,8 @@ func (m *SAManager) GetDatabaseInfo(
 
 		err := rows.Scan(&logicalName, &fileName, &sizeMB, &maxSizeMB)
 		if err != nil {
-			return nil, err
+        fmt.Println(fmt.Errorf("Get info database row scan query: %w", err))
+		return nil, fmt.Errorf("Get info database row scan query: %w", err)
 		}
 		dbInfo = append(dbInfo, model.DatabaseFileDetail{
 			LogicalName: logicalName,
@@ -188,8 +199,10 @@ func (m *SAManager) GetDatabaseInfo(
 		})
 	}
 	if err := rows.Err(); err != nil {
-		return nil, err
+        fmt.Println(fmt.Errorf("Get info database row query: %w", err))
+		return nil, fmt.Errorf("Get info database row query: %w", err)
 	}
+    fmt.Println(dbInfo)
 	return dbInfo, nil
 }
 
@@ -213,7 +226,8 @@ func (m *SAManager) GetLogins(ctx context.Context) ([]model.Login, error) {
     `
 	rows, err := m.DB.Query(q)
 	if err != nil {
-		return nil, err
+        fmt.Println(fmt.Errorf("Get logins execute query: %w", err))
+		return nil, fmt.Errorf("Get logins execute query: %w", err)
 	}
 	defer rows.Close()
 	var lgs []model.Login
@@ -221,23 +235,28 @@ func (m *SAManager) GetLogins(ctx context.Context) ([]model.Login, error) {
 		var lg model.Login
 		err := rows.Scan(&lg.LoginName, &lg.IsSysAdmin)
 		if err != nil {
-			return nil, err
+        fmt.Println(fmt.Errorf("Get logins scan row query: %w", err))
+		return nil, fmt.Errorf("Get logins scan row query: %w", err)
 		}
 		lgs = append(lgs, lg)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, err
+        fmt.Println(fmt.Errorf("Get logins row query: %w", err))
+		return nil, fmt.Errorf("Get logins row query: %w", err)
 	}
+    fmt.Println(lgs)
 	return lgs, nil
 }
 
 func (m *SAManager) CreateLogin(ctx context.Context, arg *model.Login) error {
 	q, err := loadTemplate("CreateSQLLogin.sql", arg)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Create SQL Login generate query: %w", err))
 		return fmt.Errorf("Create SQL Login generate query: %w", err)
 	}
 	r, err := m.DB.Exec(q)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Create SQL Login execute query: %w", err))
 		return fmt.Errorf("Create SQL Login execute query: %w", err)
 	}
 	fmt.Println(r)
@@ -247,10 +266,12 @@ func (m *SAManager) CreateLogin(ctx context.Context, arg *model.Login) error {
 func (m *SAManager) DropLogin(ctx context.Context, loginName string) error {
 	q, err := loadTemplate("DropLogin.sql", loginName)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Drop Login generate query: %w", err))
 		return fmt.Errorf("Drop Login generate query: %w", err)
 	}
 	r, err := m.DB.Exec(q)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Drop Login execute query: %w", err))
 		return fmt.Errorf("Drop Login execute query: %w", err)
 	}
 	fmt.Println(r)
@@ -261,10 +282,13 @@ func (m *SAManager) DropLogin(ctx context.Context, loginName string) error {
 func (m *SAManager) CreateUser(ctx context.Context, arg *model.CreateUserForLogin) error {
 	q, err := loadTemplate("CreateUserForLogin.sql", arg)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Create user generate query: %w", err))
 		return fmt.Errorf("Create user generate query: %w", err)
 	}
+    fmt.Println(q)
 	r, err := m.DB.Exec(q)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Create user execute query: %w", err))
 		return fmt.Errorf("Create user execute query: %w", err)
 	}
 	fmt.Println(r)
@@ -274,10 +298,13 @@ func (m *SAManager) CreateUser(ctx context.Context, arg *model.CreateUserForLogi
 func (m *SAManager) DropUser(ctx context.Context, arg *model.DropUser) error {
 	q, err := loadTemplate("DropUser.sql", arg)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Drop user generate query: %w", err))
 		return fmt.Errorf("Drop user generate query: %w", err)
 	}
+    fmt.Println(q)
 	r, err := m.DB.Exec(q)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Drop user execute query: %w", err))
 		return fmt.Errorf("Drop user execute query: %w", err)
 	}
 	fmt.Println(r)
@@ -347,11 +374,14 @@ func (m *SAManager) GetTablesByDatabase(ctx context.Context, name string) ([]str
 
 func (m *SAManager) CreateTable(ctx context.Context, arg *model.CreateTable) error {
 	q, err := loadTemplate("CreateTable.sql", arg)
+	fmt.Println(q)
 	if err != nil {
+		fmt.Println(err)
 		return fmt.Errorf("Create table  generate query: %w", err)
 	}
 	r, err := m.DB.Exec(q)
 	if err != nil {
+		fmt.Println(err)
 		return fmt.Errorf("Create Table execute query: %w", err)
 	}
 	fmt.Println(r)
@@ -393,7 +423,7 @@ func (m *SAManager) GetAllFromTable(ctx context.Context, arg string) ([]*model.R
 	for rows.Next() {
 		err := rows.Scan(values...)
 		if err != nil {
-		return nil, fmt.Errorf("Get rows from table Rows Scan: %w", err)
+			return nil, fmt.Errorf("Get rows from table Rows Scan: %w", err)
 		}
 		row := make(map[string]interface{})
 		var ct model.RowTable
@@ -467,6 +497,6 @@ func loadTemplate(fileName string, data interface{}) (string, error) {
 	return b.String(), nil
 }
 
-func (m *SAManager) Stop()error {
+func (m *SAManager) Stop() error {
 	return m.stopPolling()
 }

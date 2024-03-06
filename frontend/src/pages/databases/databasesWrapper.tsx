@@ -64,18 +64,18 @@ export function DatabasesWrapper() {
         <>
             <Page.Root>
                 <Page.Header>
-                    <Page.Title>{'Usuarios y bases de datos'}</Page.Title>
+                    <Page.Title>{'USUARIOS Y BASES DE DATOS'}</Page.Title>
                 </Page.Header>
                 <div className='z-40 h-full w-full overflow-y-scroll'>
                     <motion.section
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.125 }}
-                        className='grid w-full min-h-[400px] gap-4 border-b-[1px] border-solid border-b-[rgba(255,255,255,.125)] px-8 py-6 pb-2'
+                        className='grid w-full min-h-[400px] max-h-[405px] gap-4 border-b-[1px] border-solid border-b-[rgba(255,255,255,.125)] px-8 py-6 pb-2'
                     >
                         <div className='flex items-center justify-between gap-8'>
                             <div className='flex flex-col h-full w-[300px] justify-between gap-4 '>
-                                {DDBB?.length === 0 ?
+                                {dbs.length === 0 ?
                                     <div className='h-full bg-[rgba(3,50,28,0.20)]'>
                                         <h2 className="text-xl text-center text-[#3DB8D5]">{`Bases de Datos (${dbs.length})`}</h2>
                                         <p className='my-4 max-w-[340px] pl-3'>

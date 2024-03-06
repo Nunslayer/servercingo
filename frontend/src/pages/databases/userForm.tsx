@@ -7,7 +7,7 @@ import * as Collapsible from '@radix-ui/react-collapsible'
 import { motion } from 'framer-motion'
 import React from 'react'
 import { model } from '@@/go/models'
-import { useAppDispatch } from '@/store/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 // import { createDatabase } from '@/store/slices/auth/auth.thunks'
 import { RoleSelect } from './roleSelect';
 import { createUserForLogin } from '@/store/slices/auth/auth.thunks';
@@ -53,6 +53,7 @@ const defaultRoles: RolesAvailable = {
     db_denydatareader:false
 }
 export function UserCreateForm() {
+    const {dbs, lgs} = useAppSelector((state)=> state.auth)
     const [isDefault, setIsDefault] = React.useState(false)
     const [roles, setRoles] = React.useState(defaultRoles)
     const [dbName, setDbName] = React.useState("")
@@ -112,7 +113,7 @@ export function UserCreateForm() {
                                         <Label htmlFor="databases" value="Base de Datos" className="cursor-pointer text-md text-gray-300 transition-colors group-hover:text-white" color="gray" />
                                     </div>
                                     <Select id="databases" onChange={(e)=>setDbName(e.target.value) } required>
-                                    {DDBB.map((db)=>{
+                                    {dbs.map((db)=>{
                                         return(
                                         <option value={db}>{db}</option>
                                         )
@@ -124,7 +125,7 @@ export function UserCreateForm() {
                                         <Label htmlFor="logins" value="Login" className="cursor-pointer text-md text-gray-300 transition-colors group-hover:text-white" color="gray" />
                                     </div>
                                     <Select id="logins" onChange={(e)=>setLoginName(e.target.value) } required>
-                                    {LLGG.map((lg)=>{
+                                    {lgs.map((lg)=>{
                                         return(
                                         <option key={lg.loginName}value={lg.loginName}>{lg.loginName}</option>
                                         )
@@ -140,7 +141,6 @@ export function UserCreateForm() {
                                 </div>
                                 <div
                                     className='block w-full border-0  bg-transparent px-4 pb-1 pr-14 pt-2 text-md text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparen'
-                                // style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                                 >
                                 <RoleSelect
                                     roles={roles}

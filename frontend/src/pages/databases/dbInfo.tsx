@@ -1,17 +1,13 @@
-// import { Button } from '@/components/custom/button'
-// import { BoxIcon, CheckboxIcon } from '@radix-ui/react-icons'
-// import { Checkbox } from '@/components/custom/checkbox'
 import * as Form from '@radix-ui/react-form'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import { motion } from 'framer-motion'
 import { Blockquote } from 'flowbite-react';
 import React from 'react'
 import { model } from '@@/go/models'
-import { useAppSelector } from '@/store/hooks'
-// import { createDatabase } from '@/store/slices/auth/auth.thunks'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { GetDatabaseInfo } from '@@/go/core/CommandHandler';
-import { useErrorPopup } from '@/app/error-popup';
-const INFODDBB: model.DatabaseFileDetail[] = [
+import { setIsLoading } from '@/store/slices/auth/auth.slice';
+export const INFODDBB: model.DatabaseFileDetail[] = [
     {
         fileName: "C:/BDs/BdExample_data.fmd",
         logicalName: "BdExample_data",
@@ -28,39 +24,18 @@ const INFODDBB: model.DatabaseFileDetail[] = [
 export function DbInfo() {
     const [fileDetail, setFileDetail] = React.useState<model.DatabaseFileDetail[]>([])
     const [isDefault, setIsDefault] = React.useState(true)
-    // const [dbName, setDbName] = React.useState("")
-    // const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch()
     const { database } = useAppSelector((state) => state.auth)
-    const setError = useErrorPopup()
-    // const handleCreateDatabaseForm = async () => {
-    //     // const newDb={
-    //     //     dbName,
-    //     //     isDefault,
-    //     //     dbFiles:[
-    //     //         {
-    //     //             logicalName: name,
-    //     //             fileName,
-    //     //             sizeMB:size,
-    //     //             maxSizeMB: maxSize,
-    //     //         },
-    //     //         {
-    //     //             logicalName: logName,
-    //     //             fileName: logFileName,
-    //     //             sizeMB: logSize,
-    //     //             maxSizeMB: logMaxSize,
-    //     //         }
-    //     //     ]
-    //     // } as model.CreateDatabase
-    //     // dispatch(createDatabase(newDb))
-    //     props.closeForm()
-    // }
-
     React.useEffect(() => {
-        if (database === null) return
-        GetDatabaseInfo(database).then(setFileDetail).catch(setError)
-        // GetThemes().then(setThemes).catch(setError)
+        ; (async function() {
+            if (database != null) {
+                dispatch(setIsLoading(true))
+                const res = await (GetDatabaseInfo(database) ?? []) as model.DatabaseFileDetail[]
+                setFileDetail(res)
+                dispatch(setIsLoading(false))
+            }
+        })()
     }, [database])
-    console.log(fileDetail)
     return (
         <>
             {database === null ? <EmptyInfo /> :
@@ -95,7 +70,7 @@ export function DbInfo() {
                                                 className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-1 pb-1 pr-0 pt-1 text-sm text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
                                                 type={'text'}
                                                 readOnly
-                                                value={INFODDBB[0].logicalName}
+                                                value={fileDetail[0].logicalName?? `${database}_ERROR`}
                                                 placeholder={'BDProyecto_Data'}
                                                 required
                                             />
@@ -108,7 +83,7 @@ export function DbInfo() {
                                                 className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-1 pb-1 pr-0 pt-1 text-sm text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
                                                 type={'text'}
                                                 readOnly
-                                                value={INFODDBB[0].fileName}
+                                                value={fileDetail[0].fileName ?? `${database}_ERROR`}
                                                 required
                                             />
                                         </div>
@@ -120,7 +95,7 @@ export function DbInfo() {
                                                 className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-1 pb-1 pr-0 pt-1 text-sm text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
                                                 type={'number'}
                                                 readOnly
-                                                value={INFODDBB[0].sizeMB}
+                                                value={fileDetail[0].sizeMB?? 0}
                                                 required
                                             />
                                         </div>
@@ -132,7 +107,7 @@ export function DbInfo() {
                                                 className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-1 pb-1 pr-0 pt-1 text-sm text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
                                                 type={'number'}
                                                 readOnly
-                                                value={INFODDBB[0].maxSizeMB}
+                                                value={fileDetail[0].maxSizeMB?? 0}
                                                 required
                                             />
                                         </div>
@@ -147,7 +122,7 @@ export function DbInfo() {
                                                 className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-1 pb-1 pr-0 pt-1 text-sm text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
                                                 type={'text'}
                                                 readOnly
-                                                value={INFODDBB[1].logicalName}
+                                                value={fileDetail[1].logicalName?? `${database}_LOG_ERROR`}
                                             />
                                         </div>
                                         <div
@@ -158,7 +133,7 @@ export function DbInfo() {
                                                 className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-1 pb-1 pr-0 pt-1 text-sm text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
                                                 type={'text'}
                                                 readOnly
-                                                value={INFODDBB[1].fileName}
+                                                value={fileDetail[1].fileName?? `${database}_LOG_ERROR`}
                                             />
                                         </div>
                                         <div
@@ -169,7 +144,7 @@ export function DbInfo() {
                                                 className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-1 pb-1 pr-0 pt-1 text-sm text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
                                                 type={'number'}
                                                 readOnly
-                                                value={INFODDBB[1].sizeMB}
+                                                value={fileDetail[1].sizeMB?? 0}
                                                 required
                                             />
                                         </div>
@@ -181,7 +156,7 @@ export function DbInfo() {
                                                 className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-1 pb-1 pr-0 pt-1 text-sm text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
                                                 type={'number'}
                                                 readOnly
-                                                value={INFODDBB[1].maxSizeMB}
+                                                value={fileDetail[1].maxSizeMB?? 0}
                                                 required
                                             />
                                         </div>
@@ -213,11 +188,3 @@ function EmptyInfo() {
         </motion.div>
     )
 }
-                            // className="box-border w-full
-                            // text-violet11 shadow-blackA4 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px]"
-                            // <input
-                            //     className='block w-full border-0 border-b-2 border-b-[rgba(255,255,255,0.275)] bg-transparent px-4 pb-3 pr-12 pt-0 text-md text-gray-300 outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
-                            //     type={'text'}
-                            //     placeholder={'BDProyecto'}
-                            //     required
-                            //
