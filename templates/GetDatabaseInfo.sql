@@ -1,5 +1,4 @@
 SELECT
-    DB_NAME(database_id) AS DatabaseName,
     name AS LogicalName,
     physical_name AS FileName,
     CONVERT(BIGINT, size) * 8 / 1024 AS SizeMB,

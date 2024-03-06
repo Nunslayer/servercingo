@@ -12,7 +12,7 @@ import { createDatabase } from '@/store/slices/auth/auth.thunks'
 export function DatabaseCreationForm(props: {
     closeForm: () => void
 }) {
-    const [isDefault, setIsDefault] = React.useState(false)
+    const [isDefault, setIsDefault] = React.useState(true)
     const [dbName, setDbName] = React.useState("")
     const [name, setName] = React.useState("")
     const [fileName, setFileName] = React.useState("")
@@ -26,7 +26,7 @@ export function DatabaseCreationForm(props: {
     const handleCreateDatabaseForm = async () => {
         const newDb = {
             dbName,
-            isDefault,
+            isDefault:!isDefault,
             dbFiles: [
                 {
                     logicalName: name,
@@ -97,7 +97,7 @@ export function DatabaseCreationForm(props: {
                                         <button
                                             className="h-[30px] w-[30px] inline-flex items-center px-0 py-0 justify-center text-white-900 text-xl outline-none data-[state=closed]:bg-transparent data-[state=open]:bg-transparent "
                                         >
-                                            {isDefault ? <BoxIcon /> : <CheckboxIcon />}
+                                            {isDefault ?  <CheckboxIcon />: <BoxIcon />}
                                         </button>
                                     </Collapsible.Trigger>
                                 </div>

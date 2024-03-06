@@ -29,16 +29,22 @@ export function DbInfo() {
     React.useEffect(() => {
         ; (async function() {
             if (database != null) {
+                try{
                 dispatch(setIsLoading(true))
                 const res = await (GetDatabaseInfo(database) ?? []) as model.DatabaseFileDetail[]
                 setFileDetail(res)
                 dispatch(setIsLoading(false))
+                }catch(error){
+                    console.log(error)
+                    dispatch(setIsLoading(false))
+                }
+
             }
         })()
     }, [database])
     return (
         <>
-            {database === null ? <EmptyInfo /> :
+            {fileDetail.length <2 ? <EmptyInfo /> :
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
