@@ -87,64 +87,44 @@ export namespace model {
 		    return a;
 		}
 	}
-	export class TableColumn {
+	export class TableColumnReq {
 	    columnName: string;
 	    dataType: string;
-	    // Go type: sql
-	    maxLength: any;
-	    isNullable: string;
-	    // Go type: sql
+	    maxLength?: any;
+	    isNullable?: string;
 	    defaultValue: any;
 	    isIdentity: string;
 	    isPrimaryKey: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new TableColumn(source);
+	        return new TableColumnReq(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.columnName = source["columnName"];
 	        this.dataType = source["dataType"];
-	        this.maxLength = this.convertValues(source["maxLength"], null);
+	        this.maxLength = source["maxLength"];
 	        this.isNullable = source["isNullable"];
-	        this.defaultValue = this.convertValues(source["defaultValue"], null);
+	        this.defaultValue = source["defaultValue"];
 	        this.isIdentity = source["isIdentity"];
 	        this.isPrimaryKey = source["isPrimaryKey"];
 	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
 	}
-	export class CreateTable {
+	export class CreateTableReq {
 	    dbName: string;
 	    tableName: string;
-	    columns: TableColumn[];
+	    columns?: TableColumnReq[];
 	
 	    static createFrom(source: any = {}) {
-	        return new CreateTable(source);
+	        return new CreateTableReq(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.dbName = source["dbName"];
 	        this.tableName = source["tableName"];
-	        this.columns = this.convertValues(source["columns"], TableColumn);
+	        this.columns = this.convertValues(source["columns"], TableColumnReq);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -379,6 +359,50 @@ export namespace model {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.values = source["values"];
 	    }
+	}
+	export class TableColumn {
+	    columnName: string;
+	    dataType: string;
+	    // Go type: sql
+	    maxLength: any;
+	    isNullable: string;
+	    // Go type: sql
+	    defaultValue: any;
+	    isIdentity: string;
+	    isPrimaryKey: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new TableColumn(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.columnName = source["columnName"];
+	        this.dataType = source["dataType"];
+	        this.maxLength = this.convertValues(source["maxLength"], null);
+	        this.isNullable = source["isNullable"];
+	        this.defaultValue = this.convertValues(source["defaultValue"], null);
+	        this.isIdentity = source["isIdentity"];
+	        this.isPrimaryKey = source["isPrimaryKey"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
 	}
 	
 	export class TrackingState {

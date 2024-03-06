@@ -1,5 +1,4 @@
 USE {{ .DbName }}
-GO
 
 CREATE TABLE {{ .TableName }}(
 {{ $limit := len .Columns }}
@@ -7,4 +6,3 @@ CREATE TABLE {{ .TableName }}(
 {{ formatColumn $value }}{{coma $limit $index}}
 {{ end}}
 )
-GO

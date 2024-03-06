@@ -54,6 +54,20 @@ type (
 		IsIdentity   string         `json:"isIdentity"`
 		IsPrimaryKey string         `json:"isPrimaryKey"`
 	}
+	TableColumnReq struct {
+		ColumnName   string      `json:"columnName"`
+		DataType     string      `json:"dataType"`
+		MaxLength    interface{} `json:"maxLength,omitempty"`
+		IsNullable   string      `json:"isNullable,omitempty"`
+		DefaultValue interface{} `json:"defaultValue"`
+		IsIdentity   string      `json:"isIdentity"`
+		IsPrimaryKey string      `json:"isPrimaryKey"`
+	}
+	CreateTableReq struct {
+		DbName    string           `json:"dbName"`
+		TableName string           `json:"tableName"`
+		Columns   []TableColumnReq `json:"columns,omitempty"`
+	}
 	CreateTable struct {
 		DbName    string        `json:"dbName"`
 		TableName string        `json:"tableName"`

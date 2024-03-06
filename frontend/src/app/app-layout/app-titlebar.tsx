@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react'
 import { Quit, WindowMinimise } from '@@/runtime/runtime'
 
-import { DarkThemeToggle } from 'flowbite-react';
 export function AppTitleBar() {
     return (
         <div style={{ '--draggable': 'drag' } as React.CSSProperties}>
@@ -27,7 +26,6 @@ export function AppTitleBar() {
                             className='text-yellow-800 opacity-0 transition-all group-hover:opacity-100'
                         />
                     </button>
-                    <DarkThemeToggle />
                 </div>
             </div>
         </div>

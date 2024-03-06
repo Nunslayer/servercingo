@@ -9,9 +9,6 @@ import * as Page from '@/components/custom/page'
 import { Label, Select } from 'flowbite-react'
 import { CreateTableForm } from './tbForm'
 
-// import { ThemeSelect } from './theme-select'
-// import { StatSelect } from './stat-select'
-
 export const DDBB = ["DBCENSO", "BDAEROPUERTO", "BDEvaluacion02", "BDPractica1"]
 
 export function OutputPage() {
@@ -56,7 +53,7 @@ export function OutputPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.125 }}
-                    className='flex w-full items-center justify-between gap-8 px-8 py-6'
+                    className='flex flex-col w-full items-center justify-between gap-8 px-8 py-6'
                 >
                 </motion.section>
             </div>

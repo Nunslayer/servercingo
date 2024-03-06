@@ -33,7 +33,7 @@ export function Nav() {
             */}
             <NavItem href={NavItems[0].href} icons={NavItems[0].icons} selected={location.pathname.includes(NavItems[0].href)} disabled={false} />
             <NavItem href={NavItems[1].href} icons={NavItems[1].icons} selected={location.pathname.includes(NavItems[1].href)} disabled={!isConnected} />
-            <NavItem href={NavItems[2].href} icons={NavItems[2].icons} selected={location.pathname.includes(NavItems[2].href)} disabled={!isConnected} />
+            <NavItem href={NavItems[2].href} icons={NavItems[2].icons} selected={location.pathname.includes(NavItems[2].href)} disabled={false} />
         </nav>
     )
 }

@@ -12,7 +12,7 @@ export function CreateDatabase(arg1:model.CreateDatabase):Promise<void>;
 
 export function CreateLogin(arg1:model.Login):Promise<void>;
 
-export function CreateTable(arg1:model.CreateTable):Promise<void>;
+export function CreateTable(arg1:model.CreateTableReq):Promise<void>;
 
 export function CreateUser(arg1:model.CreateUserForLogin):Promise<void>;
 

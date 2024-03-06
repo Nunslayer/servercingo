@@ -2,7 +2,6 @@ import React from 'react'
 import * as Portal from '@radix-ui/react-portal';
 // import { useSelector } from '@xstate/react'
 import { Outlet } from 'react-router-dom'
-import { Flowbite } from 'flowbite-react';
 // import { Icon } from '@iconify/react'
 
 // import { BrowserOpenURL } from '@@/runtime/runtime'
@@ -16,7 +15,6 @@ export function AppWrapper() {
     const { isLoading } = useAppSelector((state) => state.auth)
     return (
         <>
-            <Flowbite>
                 <AppSidebar />
                 {isLoading ? <LoadingBar /> : null}
                 <div className='flex-[1]'>
@@ -24,7 +22,6 @@ export function AppWrapper() {
                         <Outlet />
                     </React.StrictMode>
                 </div>
-            </Flowbite>
         </>
     )
 }
