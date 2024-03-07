@@ -354,6 +354,15 @@ func (ch *CommandHandler) DropTable(arg model.DropTable) error {
 func (ch *CommandHandler) GetAllFromTable(arg model.GetAll) ([]*model.RowTable, error) {
 	return ch.manager.GetAllFromTable(ch.ctx, &arg)
 }
+func (ch *CommandHandler) InsertN(arg int64) error {
+	return ch.manager.InsertN(ch.ctx, arg)
+}
+func (ch *CommandHandler) InsertNCrypto(arg int64) error {
+	return ch.manager.InsertNCrypto(ch.ctx, arg)
+}
+func (ch *CommandHandler) DamageTable() error {
+	return ch.manager.DamageTable(ch.ctx)
+}
 
 func (ch *CommandHandler) GetColumnsInfoByTableName(arg string) ([]*model.TableColumn, error) {
 	return ch.manager.GetColumnsInfoByTableName(ch.ctx, arg)

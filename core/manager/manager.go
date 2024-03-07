@@ -31,6 +31,9 @@ type DBManager interface {
 	DropTable(ctx context.Context, arg *model.DropTable) error
 	GetAllFromTable(ctx context.Context, arg *model.GetAll) ([]*model.RowTable, error)
 	GetColumnsInfoByTableName(ctx context.Context, name string) ([]*model.TableColumn, error)
+	InsertNCrypto(ctx context.Context, num int64) error
+	InsertN(ctx context.Context, num int64) error
+	DamageTable(ctx context.Context) error
 }
 
 type ManagerType uint8

@@ -5,8 +5,8 @@ import { Button, Label, Select } from 'flowbite-react'
 import { CreateTableForm } from './tbForm'
 import { RowDisplay } from './tableCast'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { setIsLoading, setLogin, setTable } from '@/store/slices/auth/auth.slice'
-import { GetAllFromTable, GetTablesByDatabase } from '@@/go/core/CommandHandler'
+import { setIsLoading, setTable } from '@/store/slices/auth/auth.slice'
+import { GetAllFromTable, GetTablesByDatabase, InsertN, InsertNCrypto } from '@@/go/core/CommandHandler'
 import { cn } from '@/lib/utils'
 import { model } from '@@/go/models'
 
@@ -15,30 +15,54 @@ export const DDBB = ["DBCENSO", "BDAEROPUERTO", "BDEvaluacion02", "BDPractica1"]
 export function OutputPage() {
     const [dbName, setDbName] = React.useState("")
     const [tbs, setTbs] = React.useState<string[]>([])
+    const [num, setNum] = React.useState(0)
+    const [numCrypto, setNumCrypto] = React.useState(0)
     const [data, setData] = React.useState<model.RowTable[]>([])
     const { dbs, table } = useAppSelector((state) => state.auth)
     const dispatch = useAppDispatch()
     console.log(dbName)
-    const handleGetAllFromTable=async()=>{
-        try{
-            const ga:model.GetAll={
+    const handleGetAllFromTable = async () => {
+        if (table === null) return
+        try {
+            const ga: model.GetAll = {
                 dbName,
-                tableName: table as string,
-            }as model.GetAll
+                tableName: table
+            } as model.GetAll
             dispatch(setIsLoading(true))
             const res = await GetAllFromTable(ga)
             setData(res)
-        }catch(error){
+            dispatch(setIsLoading(false))
+        } catch (error) {
+            console.log(error)
+            dispatch(setIsLoading(false))
+        }
+    }
+    const handleInsertCrypto=async()=>{
+        try {
+            dispatch(setIsLoading(true))
+            await InsertNCrypto(numCrypto)
+            dispatch(setIsLoading(false))
+        } catch (error) {
+            console.log(error)
+            dispatch(setIsLoading(false))
+        }
+    }
+    const handleInsert=async()=>{
+        try {
+            dispatch(setIsLoading(true))
+            await InsertN(num)
+            dispatch(setIsLoading(false))
+        } catch (error) {
             console.log(error)
             dispatch(setIsLoading(false))
         }
     }
     React.useEffect(() => {
-        ; (async function() {
+        ; (async function () {
             if (dbName != "") {
                 try {
                     dispatch(setIsLoading(true))
-                    const res = await (GetTablesByDatabase(dbName) ?? []) as string[]
+                    const res = await GetTablesByDatabase(dbName)
                     setTbs(res)
                     dispatch(setIsLoading(false))
                 } catch (error) {
@@ -65,7 +89,7 @@ export function OutputPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.125 }}
-                    className='grid w-full min-h-[250px] gap-4 border-b-[1px] border-solid border-b-[rgba(255,255,255,.125)] px-8 py-6 pb-2'
+                    className='flex flex-row justify-between w-full min-h-[250px] gap-4 border-b-[1px] border-solid border-b-[rgba(255,255,255,.125)] px-8 py-6 pb-2 overflow-y-scroll'
                 >
                     <div className='flex items-center justify-between gap-8'>
                         <div className='flex flex-col h-full w-[300px] justify-between gap-4 '>
@@ -79,6 +103,7 @@ export function OutputPage() {
                                         setDbName(e.target.value)
                                         dispatch(setTable(null))
                                     }}
+                                    sizing="sm"
                                     required
                                 >
                                     {dbs.map((db) => {
@@ -87,30 +112,86 @@ export function OutputPage() {
                                         )
                                     })}
                                 </Select>
+                                <ul>
 
+                                    {tbs?.map((m) => {
+                                        return (
+                                            <ListTable key={m} value={m} selected={m === table} />
+                                        )
+                                    })}
+                                </ul>
                             </div>
+
                         </div>
                         <div className='flex flex-col gap-4'>
-                            <ul>
 
-                                {tbs.map((m) => {
-                                    return (
-                                        <ListTable key={m} value={m} selected={m === table} />
-                                    )
-                                })}
-                            </ul>
                         </div>
                     </div>
                     {
-                        table !== null?
-                            <div>
+                        table !== null ?
+                            <div className='flex items-top justify-top gap-8'>
                                 {table}
                                 <Button
-                                    onClick={()=> handleGetAllFromTable()}
+                                    onClick={() => handleGetAllFromTable()}
+                                    size="sm"
+                                    className='h-[40px]'
                                 >
-
+                                    Traer todo
                                 </Button>
-                            </div>:null
+                                {
+                                    table === "PFALUMNOS" ? (
+                                        <>
+                                        <div>
+                                            <div className="mb-2 block">
+                                                <Label htmlFor="num" value="Cantidad" className="cursor-pointer text-md text-gray-300 transition-colors group-hover:text-white" color="gray" />
+                                            </div>
+                                            <input
+                                                id='num'
+                                                className='block w-full border-0 bg-transparent px-0 pb-0 pr-0 pt-0 text-sm text-center outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
+                                                type={'number'}
+                                                value={num}
+                                                onChange={(e) => setNum(Number(e.target.value))}
+                                            />
+                                            <Button
+                                                onClick={() => handleInsert()}
+                                                size="sm"
+                                                className='h-[40px]'
+                                            >
+                                                + 200
+                                            </Button>
+                                        </div>
+                                        <div>
+                                        <div className="mb-2 block">
+                                                <Label htmlFor="num" value="Cantidad" className="cursor-pointer text-md text-gray-300 transition-colors group-hover:text-white" color="gray" />
+                                            </div>
+                                            <input
+                                                id='num'
+                                                className='block w-full border-0 bg-transparent px-0 pb-0 pr-0 pt-0 text-sm text-center outline-none transition-colors hover:border-white hover:text-white focus:border-white focus:outline-none focus:ring-transparent focus:ring-offset-transparent'
+                                                type={'number'}
+                                                value={numCrypto}
+                                                onChange={(e) => setNumCrypto(Number(e.target.value))}
+                                            />
+                                            <Button
+                                                onClick={() => handleInsertCrypto()}
+                                                size="sm"
+                                                className='h-[40px]'
+                                            >
+                                                + 200 encriptados
+                                            </Button>
+                                        </div>
+                                            
+                                            
+                                            <Button
+                                                onClick={() => handleGetAllFromTable()}
+                                                size="sm"
+                                                className='h-[40px]'
+                                            >
+                                                Dañar
+                                            </Button>
+                                        </>
+                                    ) : null
+                                }
+                            </div> : null
                     }
                 </motion.section>
                 <motion.section
@@ -149,7 +230,7 @@ function ListTable(
                 pointerEvents: props.disabled ? 'none' : 'all',
                 cursor: "pointer"
             }}
-            onClick={() => dispatch(setLogin(props.value))}
+            onClick={() => dispatch(setTable(props.value))}
         >
             <div className='flex items-center justify-between'>
                 <span>{props.value}</span>

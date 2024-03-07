@@ -16,6 +16,8 @@ export function CreateTable(arg1:model.CreateTableReq):Promise<void>;
 
 export function CreateUser(arg1:model.CreateUserForLogin):Promise<void>;
 
+export function DamageTable():Promise<void>;
+
 export function DropDatabase(arg1:string):Promise<void>;
 
 export function DropLogin(arg1:string):Promise<void>;
@@ -61,6 +63,10 @@ export function GetUserById(arg1:number):Promise<model.User>;
 export function GetUsers():Promise<Array<model.User>>;
 
 export function GetUsersByEngineId(arg1:number):Promise<Array<model.User>>;
+
+export function InsertN(arg1:number):Promise<void>;
+
+export function InsertNCrypto(arg1:number):Promise<void>;
 
 export function OpenResultsDirectory():Promise<void>;
 

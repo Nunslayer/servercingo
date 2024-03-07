@@ -26,6 +26,10 @@ export function CreateUser(arg1) {
   return window['go']['core']['CommandHandler']['CreateUser'](arg1);
 }
 
+export function DamageTable() {
+  return window['go']['core']['CommandHandler']['DamageTable']();
+}
+
 export function DropDatabase(arg1) {
   return window['go']['core']['CommandHandler']['DropDatabase'](arg1);
 }
@@ -116,6 +120,14 @@ export function GetUsers() {
 
 export function GetUsersByEngineId(arg1) {
   return window['go']['core']['CommandHandler']['GetUsersByEngineId'](arg1);
+}
+
+export function InsertN(arg1) {
+  return window['go']['core']['CommandHandler']['InsertN'](arg1);
+}
+
+export function InsertNCrypto(arg1) {
+  return window['go']['core']['CommandHandler']['InsertNCrypto'](arg1);
 }
 
 export function OpenResultsDirectory() {
