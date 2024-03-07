@@ -2,10 +2,7 @@ package core
 
 import (
 	"context"
-	"database/sql"
-	"reflect"
 
-	// "database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -56,18 +53,6 @@ func (ch *CommandHandler) GetSupportedLanguages() []string {
 	arrayString = append(arrayString, "es")
 	return arrayString
 }
-
-// func (ch *CommandHandler) StartTracking(cfn string, restore bool) error {
-// 	log.Printf(`Starting tracking for %s, restoring = %v`, cfn, restore)
-// 	err := ch.tracker.Start(ch.ctx, cfn, restore, 30*time.Second)
-// 	if err != nil {
-// 		log.Println(err)
-// 		if !errorsx.ContainsFormattedError(err) {
-// 			err = errorsx.NewFormattedError(http.StatusInternalServerError, fmt.Errorf(`failed to start tracking %w`, err))
-// 		}
-// 	}
-// 	return err
-// }
 
 func (ch *CommandHandler) OpenResultsDirectory() {
 	switch runtime.GOOS {
@@ -359,77 +344,15 @@ func (ch *CommandHandler) GetTablesByDatabase(name string) ([]string, error) {
 }
 
 func (ch *CommandHandler) CreateTable(arg model.CreateTableReq) error {
-	var cols []model.TableColumn
-	for _, cl := range arg.Columns {
-        var sni sql.NullInt64
-		tni := reflect.TypeOf(cl.MaxLength).String()
-		// tns := reflect.TypeOf(cl.DefaultValue).String()
-        fmt.Println(tni)
-		if tni != "float64" {
-            sni.Valid = false
-		} else {
-            v,ok := cl.MaxLength.(int64)
-            if !ok {
-                fmt.Println(v)
-				return fmt.Errorf("Error type assertion NullInt64: %v", v)
-            }
-            sni.Int64 = v
-            fmt.Println(v)
-			// err := sni.Scan(&v)
-			// if err != nil {
-			// 	fmt.Println(fmt.Errorf("Error scan NullInt64: %w", err))
-			// 	return fmt.Errorf("Error scan NullInt64: %w", err)
-			// }
-
-		}
-		// fmt.Println(tns)
-		// if tns != "string" {
-		// 	// err := sns.Scan(nil)
-		// 	// if err != nil {
-		// 	// 	fmt.Println(fmt.Errorf("Error scan NullString: %w", err))
-		// 	// 	return fmt.Errorf("Error scan NullString: %w", err)
-		// 	// }
-  //           sns.Valid = false
-		// } else {
-  //           v,ok := cl.DefaultValue.(string)
-  //           if !ok {
-  //               fmt.Println(v)
-		// 		return fmt.Errorf("Error type assertion NullString: %v", v)
-  //           }
-		// 	err := sns.Scan(&v)
-		// 	if err != nil {
-		// 		fmt.Println(fmt.Errorf("Error scan NullString: %w", err))
-		// 		return fmt.Errorf("Error scan NullString: %w", err)
-		// 	}
-		//
-		// }
-		// col := model.TableColumn{
-		// 	ColumnName:   cl.ColumnName,
-		// 	DataType:     cl.DataType,
-		// 	MaxLength:    sni,
-		// 	IsNullable:   cl.IsNullable,
-		// 	DefaultValue: sns,
-		// 	IsIdentity:   cl.IsIdentity,
-		// 	IsPrimaryKey: cl.IsPrimaryKey,
-		// }
-		// cols = append(cols, col)
-	}
-	table := model.CreateTable{
-		DbName:    arg.DbName,
-		TableName: arg.TableName,
-		Columns:   cols,
-	}
-	fmt.Println(table)
-    return nil
-	// return ch.manager.CreateTable(ch.ctx, &table)
+	return ch.manager.CreateTable(ch.ctx, &arg)
 }
 
 func (ch *CommandHandler) DropTable(arg model.DropTable) error {
 	return ch.manager.DropTable(ch.ctx, &arg)
 }
 
-func (ch *CommandHandler) GetAllFromTable(arg string) ([]*model.RowTable, error) {
-	return ch.manager.GetAllFromTable(ch.ctx, arg)
+func (ch *CommandHandler) GetAllFromTable(arg model.GetAll) ([]*model.RowTable, error) {
+	return ch.manager.GetAllFromTable(ch.ctx, &arg)
 }
 
 func (ch *CommandHandler) GetColumnsInfoByTableName(arg string) ([]*model.TableColumn, error) {

@@ -27,9 +27,9 @@ type DBManager interface {
 	AddRoleForUser(ctx context.Context, arg *model.AddRoleForUser) error
 	DropRoleForUser(ctx context.Context, arg *model.DropRoleForUser) error
 	GetTablesByDatabase(ctx context.Context, name string) ([]string, error)
-	CreateTable(ctx context.Context, arg *model.CreateTable) error
+	CreateTable(ctx context.Context, arg *model.CreateTableReq) error
 	DropTable(ctx context.Context, arg *model.DropTable) error
-	GetAllFromTable(ctx context.Context, arg string) ([]*model.RowTable, error)
+	GetAllFromTable(ctx context.Context, arg *model.GetAll) ([]*model.RowTable, error)
 	GetColumnsInfoByTableName(ctx context.Context, name string) ([]*model.TableColumn, error)
 }
 

@@ -1,4 +1,4 @@
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setIsLoading } from '@/store/slices/auth/auth.slice';
 import { CreateTable } from '@@/go/core/CommandHandler';
 import { model } from '@@/go/models';
@@ -13,21 +13,23 @@ export function CreateTableForm() {
     const [openModal, setOpenModal] = useState(false);
     const [dbName, setDbName] = useState('');
     const [tableName, setTableName] = useState('');
+    const {dbs} = useAppSelector((state)=> state.auth)
     const dispatch = useAppDispatch()
     const addColumn = () => {
         const newColumn: model.TableColumnReq = {
             columnName: '',
-            dataType: '',
-            maxLength: null,
+            dataType: 'VARCHAR',
+            maxLength: 0,
             isNullable: 'YES',
-            defaultValue: null,
+            defaultValue: '',
             isIdentity: 'No',
             isPrimaryKey: 'No'
         } as model.TableColumn
         setColumns([...columns, newColumn])
     }
-    const handlerChangeColumn = (i: number, field: keyof model.TableColumnReq, v: string | number | null) => {
+    const handlerChangeColumn = (i: number, field: keyof model.TableColumnReq, v: string | number ) => {
         const nCs = [...columns]
+        //@ts-ignore
         nCs[i][field] = v
         setColumns(nCs)
     }
@@ -70,7 +72,7 @@ export function CreateTableForm() {
                                     <Label htmlFor="databases" value="Seleccione Base de datos" className="cursor-pointer text-md text-white transition-colors group-hover:text-white" color="gray" />
                                 </div>
                                 <Select id="databases" sizing="sm" onChange={(e) => setDbName(e.target.value)} required >
-                                    {DDBB.map((db) => {
+                                    {dbs.map((db) => {
                                         return (
                                             <option value={db}>{db}</option>
                                         )
@@ -131,7 +133,7 @@ export function CreateTableForm() {
                                                     <Table.Cell className="max-w-[120px] px-0 py-0 font-sm text-[12px] text-white text-center dark:text-white overflow-x-scroll border-solid border-r-2 border-r-[rgba(255,255,255,0.275)]">
                                                         <select
                                                             onChange={(e) => {
-                                                                if (e.target.value === "INT" || e.target.value === "BIGINT" || e.target.value === "DATE" || e.target.value === "BOOLEAN") handlerChangeColumn(i, "maxLength", null)
+                                                                if (e.target.value === "INT" || e.target.value === "BIGINT" || e.target.value === "DATE" || e.target.value === "BOOLEAN") handlerChangeColumn(i, "maxLength", 0)
                                                                 handlerChangeColumn(i, "dataType", e.target.value)
                                                             }}
                                                             className="bg-transparent outline-none border-0 text-white text-center h-[16px] mx-1 my-0 px-0 py-0 text-[12px]"

@@ -55,13 +55,13 @@ type (
 		IsPrimaryKey string         `json:"isPrimaryKey"`
 	}
 	TableColumnReq struct {
-		ColumnName   string      `json:"columnName"`
-		DataType     string      `json:"dataType"`
-		MaxLength    interface{} `json:"maxLength,omitempty"`
-		IsNullable   string      `json:"isNullable,omitempty"`
-		DefaultValue interface{} `json:"defaultValue"`
-		IsIdentity   string      `json:"isIdentity"`
-		IsPrimaryKey string      `json:"isPrimaryKey"`
+		ColumnName   string `json:"columnName"`
+		DataType     string `json:"dataType"`
+		MaxLength    int64  `json:"maxLength,omitempty"`
+		IsNullable   string `json:"isNullable,omitempty"`
+		DefaultValue string `json:"defaultValue"`
+		IsIdentity   string `json:"isIdentity"`
+		IsPrimaryKey string `json:"isPrimaryKey"`
 	}
 	CreateTableReq struct {
 		DbName    string           `json:"dbName"`
@@ -74,6 +74,10 @@ type (
 		Columns   []TableColumn `json:"columns"`
 	}
 	DropTable struct {
+		DbName    string `json:"dbName"`
+		TableName string `json:"tableName"`
+	}
+	GetAll struct {
 		DbName    string `json:"dbName"`
 		TableName string `json:"tableName"`
 	}

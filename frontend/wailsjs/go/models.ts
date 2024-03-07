@@ -90,9 +90,9 @@ export namespace model {
 	export class TableColumnReq {
 	    columnName: string;
 	    dataType: string;
-	    maxLength?: any;
+	    maxLength?: number;
 	    isNullable?: string;
-	    defaultValue: any;
+	    defaultValue: string;
 	    isIdentity: string;
 	    isPrimaryKey: string;
 	
@@ -317,6 +317,20 @@ export namespace model {
 		    }
 		    return a;
 		}
+	}
+	export class GetAll {
+	    dbName: string;
+	    tableName: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new GetAll(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.dbName = source["dbName"];
+	        this.tableName = source["tableName"];
+	    }
 	}
 	export class GuiConfig {
 	    locale: string;

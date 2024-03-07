@@ -26,7 +26,7 @@ export function DropTable(arg1:model.DropTable):Promise<void>;
 
 export function DropUser(arg1:model.DropUser):Promise<void>;
 
-export function GetAllFromTable(arg1:string):Promise<Array<model.RowTable>>;
+export function GetAllFromTable(arg1:model.GetAll):Promise<Array<model.RowTable>>;
 
 export function GetAppVersion():Promise<string>;
 

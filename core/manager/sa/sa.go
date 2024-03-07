@@ -35,16 +35,16 @@ var funcs = template.FuncMap{
 		}
 		return fmt.Sprintf("%v: %v", key, value)
 	},
-	"formatColumn": func(col model.TableColumn) string {
+	"formatColumn": func(col model.TableColumnReq) string {
 		query := fmt.Sprintf("%s %s", col.ColumnName, col.DataType)
-		if col.MaxLength.Valid {
-			query += fmt.Sprintf("(%d)", col.MaxLength.Int64)
+		if col.MaxLength>0 {
+			query += fmt.Sprintf("(%d)", col.MaxLength)
 		}
 		if col.IsNullable == "NO" {
 			query += fmt.Sprintf(" NOT NULL")
 		}
-		if col.DefaultValue.Valid {
-			query += fmt.Sprintf(" DEFAULT '%s'", col.DefaultValue.String)
+		if col.DefaultValue != "" {
+			query += fmt.Sprintf(" DEFAULT '%s'", col.DefaultValue)
 		}
 		if col.IsIdentity == "Yes" {
 			query += fmt.Sprintf(" IDENTITY")
@@ -372,7 +372,7 @@ func (m *SAManager) GetTablesByDatabase(ctx context.Context, name string) ([]str
 	return tbs, nil
 }
 
-func (m *SAManager) CreateTable(ctx context.Context, arg *model.CreateTable) error {
+func (m *SAManager) CreateTable(ctx context.Context, arg *model.CreateTableReq) error {
 	q, err := loadTemplate("CreateTable.sql", arg)
 	fmt.Println(q)
 	if err != nil {
@@ -401,17 +401,23 @@ func (m *SAManager) DropTable(ctx context.Context, arg *model.DropTable) error {
 	return nil
 }
 
-func (m *SAManager) GetAllFromTable(ctx context.Context, arg string) ([]*model.RowTable, error) {
-	q := fmt.Sprintf("SELECT * FROM %s", arg)
+func (m *SAManager) GetAllFromTable(ctx context.Context, arg *model.GetAll) ([]*model.RowTable, error) {
+	q, err := loadTemplate("DropTable.sql", arg)
+	if err != nil {
+        fmt.Println(fmt.Errorf("Get rows from table  generate query: %w", err))
+		return nil, fmt.Errorf("Get rows from table  generate query: %w", err)
+	}
 
 	// Ejecutar la consulta
 	rows, err := m.DB.Query(q)
 	if err != nil {
+        fmt.Println(fmt.Errorf("Get rows from table execute query: %w", err))
 		return nil, fmt.Errorf("Get rows from table execute query: %w", err)
 	}
 	defer rows.Close()
 	cols, err := rows.Columns()
 	if err != nil {
+        fmt.Println(fmt.Errorf("Get rows from table Columns from rows: %w", err))
 		return nil, fmt.Errorf("Get rows from table Columns from rows: %w", err)
 	}
 	values := make([]interface{}, len(cols))
@@ -423,6 +429,7 @@ func (m *SAManager) GetAllFromTable(ctx context.Context, arg string) ([]*model.R
 	for rows.Next() {
 		err := rows.Scan(values...)
 		if err != nil {
+            fmt.Println(fmt.Errorf("Get rows from table Rows Scan: %w", err))
 			return nil, fmt.Errorf("Get rows from table Rows Scan: %w", err)
 		}
 		row := make(map[string]interface{})
@@ -441,6 +448,7 @@ func (m *SAManager) GetAllFromTable(ctx context.Context, arg string) ([]*model.R
 		content = append(content, &ct)
 	}
 	if err := rows.Err(); err != nil {
+        fmt.Println(fmt.Errorf("Get rows from table Rows Err: %w", err))
 		return nil, fmt.Errorf("Get rows from table Rows Err: %w", err)
 	}
 
